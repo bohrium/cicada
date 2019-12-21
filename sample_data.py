@@ -14,7 +14,7 @@ import numpy as np
 
 # 0.0. (Hyper)Parameters of Stochastic Gradient Descent:
 
-nb_feats = 12
+nb_feats = 24
 time_min = 0.0 
 time_max = 5.0
 nb_texts = 100
@@ -30,7 +30,6 @@ def generate(nb_samples, threshold=0.999):
     x = np.random.choice(2, size=(nb_samples, nb_feats)) 
     t = np.random.uniform(size=(nb_samples, 1)) * (time_max-time_min) + time_min
     p = sigmoid(np.matmul(t*x, w_m) + np.matmul(x, w_b))
-    #y = np.random.binomial(n=1, p=p, size=(nb_samples, nb_texts))
     y = (threshold<p).astype(np.int32)
     return (x, t, y)
 
