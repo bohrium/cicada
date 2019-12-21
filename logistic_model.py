@@ -13,14 +13,14 @@ import numpy as np
 #=============================================================================#
 
 # 0.0. Dataset Sizes:
-TRAIN_SIZE = 100
-TEST_SIZE  = 100
+TRAIN_SIZE = 1000
+TEST_SIZE  =  100
 
 # 0.1. (Hyper)Parameters of Stochastic Gradient Descent:
-NB_UPDATES = 2000
-LACONICITY =  200  
-BATCH_SIZE =  100
-LEARN_RATE = 10.0
+NB_UPDATES = 10000
+LACONICITY =   500  
+BATCH_SIZE =   100
+LEARN_RATE =  10.0
 
 #=============================================================================#
 #    1. OBTAIN DATASET                                                        #
@@ -61,7 +61,6 @@ def declare_var(name, shape):
 W_xy = declare_var('wxy', shape=[nb_feats,  nb_texts])
 W_ty = declare_var('wty', shape=[nb_tbins-1,nb_texts])
 B_y  = declare_var('by',  shape=[           nb_texts])
-#weights = [W_xy, W_ty, B_y]
 
 # 2.1. Placeholders for the data to which to fit `Weights` and `Biases`.  Note
 #      that both `TrueInputs` and `TrueOutputs` are inputs to our graph:
@@ -91,9 +90,6 @@ L1Regularizer = (
     0.01 * tf.reduce_mean(tf.abs(W_ty)) + 
     0.01 * tf.reduce_mean(tf.abs(B_y ))   
 )
-
-EntLossGradNorm = 0#tf.reduce_mean(tf.abs(tf.gradients(EntropyLoss, weights)))
-L1RegGradNorm = 0#tf.reduce_mean(tf.abs(tf.gradients(L1Regularizer, weights)))
 
 Loss = EntropyLoss + L1Regularizer
 
@@ -125,17 +121,15 @@ def report_accuracy(sess, i):
     precision, recall, loss, reg = sess.run(
         [Precision, Recall, EntropyLoss, L1Regularizer],
         feed_dict={
-            TrueX:batch_x, TrueT:batch_t, TrueY:batch_y, Threshold:0.2 
+            TrueX:batch_x, TrueT:batch_t, TrueY:batch_y, Threshold:0.01 
         }
     ) 
     print('    '.join((
-        'iter %4d'       % i,
-        'precision %.2f' % precision,
-        'recall %.2f'    % recall,
-        'loss %.3f'      % loss,
-        'reg %.1e'       % reg,      
-        #'lossg %.2e'     % lossg,
-        #'regg %.2e'      % regg,
+        'iter %5d'                  % i,
+        '%5.1f flags / flagged bug' % (1.0/precision),
+        'thus find %5.1f%% of bugs' % (100.0*recall),
+        'loss %.3f'                 % loss,
+        'reg %.1e'                  % reg,      
     )))
 
 # 3.1.

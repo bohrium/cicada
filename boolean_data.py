@@ -8,19 +8,13 @@
 import tensorflow as tf
 import numpy as np
 
-###############################################################################
-#                         0. LIST PROGRAM PARAMETERS                          #
-###############################################################################
-
 nb_feats = 24
 time_min = 0.0 
 time_max = 5.0
 nb_texts = 100
 nb_tbins = 12
 
-nb_masks = 100 
-
-def random_mask(nb_conj = 7, nb_disj = 2):
+def random_mask(nb_conj = 8, nb_disj = 2):
     feat = lambda : (
         ('not ' if np.random.uniform() < 0.5 else '') + 
         ('x[%d]' % np.random.choice(nb_feats)
@@ -42,7 +36,7 @@ masks = [random_mask() for t in range(nb_texts)]
 
 def generate(nb_samples):
     ''' basic generative model: t doesn't matter '''
-    x = np.random.choice(2, size=(nb_samples, nb_feats), p=[0.9, 0.1]) 
+    x = np.random.choice(2, size=(nb_samples, nb_feats)) 
     t = np.random.uniform(size=(nb_samples, 1)) * (time_max-time_min) + time_min
     y = np.array([[eval_mask(masks[i], x[s], t[s]) for i in range(nb_texts)] for s in range(nb_samples)])
     return (x, t, y)
